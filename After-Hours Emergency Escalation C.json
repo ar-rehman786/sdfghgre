@@ -1,0 +1,2211 @@
+{
+    "name": "After-Hours Emergency Escalation C (copy)",
+    "flow": [
+        {
+            "id": 10,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 1827534,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 300
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "retell_after_hours_intake_v1"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "event",
+                        "type": "text"
+                    },
+                    {
+                        "name": "call",
+                        "spec": [
+                            {
+                                "name": "call_id",
+                                "type": "text"
+                            },
+                            {
+                                "name": "call_type",
+                                "type": "text"
+                            },
+                            {
+                                "name": "agent_id",
+                                "type": "text"
+                            },
+                            {
+                                "name": "agent_version",
+                                "type": "number"
+                            },
+                            {
+                                "name": "agent_name",
+                                "type": "text"
+                            },
+                            {
+                                "name": "retell_llm_dynamic_variables",
+                                "spec": [
+                                    {
+                                        "name": "lk-call-info",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "lk-real-ip",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "lk-transport",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "twilio-accountsid",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "twilio-callsid",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "twilio-verstat",
+                                        "type": "text"
+                                    }
+                                ],
+                                "type": "collection"
+                            },
+                            {
+                                "name": "custom_sip_headers",
+                                "spec": [
+                                    {
+                                        "name": "x-lk-call-info",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "x-lk-real-ip",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "x-lk-transport",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "x-twilio-accountsid",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "x-twilio-callsid",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "x-twilio-verstat",
+                                        "type": "text"
+                                    }
+                                ],
+                                "type": "collection"
+                            },
+                            {
+                                "name": "call_status",
+                                "type": "text"
+                            },
+                            {
+                                "name": "start_timestamp",
+                                "type": "number"
+                            },
+                            {
+                                "name": "end_timestamp",
+                                "type": "number"
+                            },
+                            {
+                                "name": "duration_ms",
+                                "type": "number"
+                            },
+                            {
+                                "name": "transcript",
+                                "type": "text"
+                            },
+                            {
+                                "name": "transcript_object",
+                                "spec": {
+                                    "spec": [
+                                        {
+                                            "name": "role",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "content",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "words",
+                                            "spec": {
+                                                "spec": [
+                                                    {
+                                                        "name": "word",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "name": "start",
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "name": "end",
+                                                        "type": "number"
+                                                    }
+                                                ],
+                                                "type": "collection"
+                                            },
+                                            "type": "array"
+                                        },
+                                        {
+                                            "name": "metadata",
+                                            "spec": [
+                                                {
+                                                    "name": "response_id",
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        }
+                                    ],
+                                    "type": "collection"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "name": "transcript_with_tool_calls",
+                                "spec": {
+                                    "spec": [
+                                        {
+                                            "name": "role",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "content",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "words",
+                                            "spec": {
+                                                "spec": [
+                                                    {
+                                                        "name": "word",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "name": "start",
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "name": "end",
+                                                        "type": "number"
+                                                    }
+                                                ],
+                                                "type": "collection"
+                                            },
+                                            "type": "array"
+                                        },
+                                        {
+                                            "name": "metadata",
+                                            "spec": [
+                                                {
+                                                    "name": "response_id",
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        }
+                                    ],
+                                    "type": "collection"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "name": "recording_url",
+                                "type": "text"
+                            },
+                            {
+                                "name": "recording_multi_channel_url",
+                                "type": "text"
+                            },
+                            {
+                                "name": "public_log_url",
+                                "type": "text"
+                            },
+                            {
+                                "name": "disconnection_reason",
+                                "type": "text"
+                            },
+                            {
+                                "name": "latency",
+                                "spec": [
+                                    {
+                                        "name": "llm",
+                                        "spec": [
+                                            {
+                                                "name": "p50",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p90",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p95",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p99",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "min",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "max",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "num",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "values",
+                                                "spec": {
+                                                    "type": "number"
+                                                },
+                                                "type": "array"
+                                            }
+                                        ],
+                                        "type": "collection"
+                                    },
+                                    {
+                                        "name": "e2e",
+                                        "spec": [
+                                            {
+                                                "name": "p50",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p90",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p95",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p99",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "min",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "max",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "num",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "values",
+                                                "spec": {
+                                                    "type": "number"
+                                                },
+                                                "type": "array"
+                                            }
+                                        ],
+                                        "type": "collection"
+                                    },
+                                    {
+                                        "name": "tts",
+                                        "spec": [
+                                            {
+                                                "name": "p50",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p90",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p95",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p99",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "min",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "max",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "num",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "values",
+                                                "spec": {
+                                                    "type": "number"
+                                                },
+                                                "type": "array"
+                                            }
+                                        ],
+                                        "type": "collection"
+                                    },
+                                    {
+                                        "name": "asr",
+                                        "spec": [
+                                            {
+                                                "name": "p50",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p90",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p95",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "p99",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "min",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "max",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "num",
+                                                "type": "number"
+                                            },
+                                            {
+                                                "name": "values",
+                                                "spec": {
+                                                    "type": "number"
+                                                },
+                                                "type": "array"
+                                            }
+                                        ],
+                                        "type": "collection"
+                                    }
+                                ],
+                                "type": "collection"
+                            },
+                            {
+                                "name": "call_cost",
+                                "spec": [
+                                    {
+                                        "name": "product_costs",
+                                        "spec": {
+                                            "spec": [
+                                                {
+                                                    "name": "product",
+                                                    "type": "text"
+                                                },
+                                                {
+                                                    "name": "unit_price",
+                                                    "type": "number"
+                                                },
+                                                {
+                                                    "name": "cost",
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "name": "total_duration_seconds",
+                                        "type": "number"
+                                    },
+                                    {
+                                        "name": "total_duration_unit_price",
+                                        "type": "number"
+                                    },
+                                    {
+                                        "name": "combined_cost",
+                                        "type": "number"
+                                    }
+                                ],
+                                "type": "collection"
+                            },
+                            {
+                                "name": "data_storage_setting",
+                                "type": "text"
+                            },
+                            {
+                                "name": "opt_in_signed_url",
+                                "type": "boolean"
+                            },
+                            {
+                                "name": "llm_token_usage",
+                                "spec": [
+                                    {
+                                        "name": "values",
+                                        "spec": {
+                                            "type": "number"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "name": "average",
+                                        "type": "number"
+                                    },
+                                    {
+                                        "name": "num_requests",
+                                        "type": "number"
+                                    }
+                                ],
+                                "type": "collection"
+                            },
+                            {
+                                "name": "tool_calls",
+                                "spec": {
+                                    "spec": [
+                                        {
+                                            "name": "tool_call_id",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "name",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "type",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "start_time_sec",
+                                            "type": "number"
+                                        }
+                                    ],
+                                    "type": "collection"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "name": "from_number",
+                                "type": "text"
+                            },
+                            {
+                                "name": "to_number",
+                                "type": "text"
+                            },
+                            {
+                                "name": "direction",
+                                "type": "text"
+                            },
+                            {
+                                "name": "telephony_identifier",
+                                "spec": [
+                                    {
+                                        "name": "twilio_call_sid",
+                                        "type": "text"
+                                    }
+                                ],
+                                "type": "collection"
+                            }
+                        ],
+                        "type": "collection"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 18,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "filter": {
+                "name": "filter",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{10.call.call_analysis.custom_analysis_data}}",
+                            "o": "exist"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "name": "incident_key",
+                "scope": "roundtrip",
+                "value": "{{10.call.retell_llm_dynamic_variables.intake_call_id}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 300
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "incident_key",
+                        "type": "any",
+                        "label": "incident_key"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 20,
+            "module": "datastore:GetRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 73333
+            },
+            "filter": {
+                "name": "incident filter",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{18.incident_key}}",
+                            "o": "exist"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "key": "{{18.incident_key}}",
+                "returnWrapped": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 300
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "First_Service_Emergency_Escalation"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key",
+                        "required": true
+                    },
+                    {
+                        "name": "returnWrapped",
+                        "type": "boolean",
+                        "label": "Return Wrapped Output",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "help": "",
+                        "name": "event",
+                        "type": "text",
+                        "label": "Event",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "call",
+                        "spec": [
+                            {
+                                "help": "",
+                                "name": "call_id",
+                                "type": "text",
+                                "label": "Call ID",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "help": "",
+                                "name": "from_number",
+                                "type": "text",
+                                "label": "From number",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "help": "",
+                                "name": "to_number",
+                                "type": "text",
+                                "label": "To number",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "help": "",
+                                "name": "agent_id",
+                                "type": "text",
+                                "label": "Agent ID",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "help": "",
+                                "name": "direction",
+                                "type": "text",
+                                "label": "Direction",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "help": "",
+                                "name": "call_analysis",
+                                "spec": [
+                                    {
+                                        "help": "",
+                                        "name": "call_summary",
+                                        "type": "text",
+                                        "label": "Call summary",
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "custom_analysis_data",
+                                        "spec": [
+                                            {
+                                                "help": "",
+                                                "name": "caller_name",
+                                                "type": "text",
+                                                "label": "Caller name",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "caller_phone",
+                                                "type": "text",
+                                                "label": "Caller phone",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "caller_address",
+                                                "type": "text",
+                                                "label": "Caller address",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "issue_summary",
+                                                "type": "text",
+                                                "label": "Issue summary",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "issue_category",
+                                                "type": "text",
+                                                "label": "Issue category",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "mentions_safety_risk",
+                                                "type": "boolean",
+                                                "label": "Mentions safety risk",
+                                                "required": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "preferred_callback_window",
+                                                "type": "text",
+                                                "label": "Preferred callback window",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            },
+                                            {
+                                                "help": "",
+                                                "name": "notes",
+                                                "type": "text",
+                                                "label": "Notes",
+                                                "default": null,
+                                                "required": false,
+                                                "multiline": false
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Custom analysis data",
+                                        "required": false
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Call analysis",
+                                "required": false
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Call",
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 29,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "status_safe",
+                "scope": "roundtrip",
+                "value": "{{ifempty(10.call.call_analysis.custom_analysis_data.status; \"Not_Answered\")}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 300
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "status_safe",
+                        "type": "any",
+                        "label": "status_safe"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 300
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 22,
+                            "module": "datastore:UpdateRecord",
+                            "version": 1,
+                            "parameters": {
+                                "datastore": 73333
+                            },
+                            "filter": {
+                                "name": "Answered",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{10.call.call_analysis.custom_analysis_data.Status}}",
+                                            "b": "Answered",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "key": "{{18.incident_key}}",
+                                "data": {
+                                    "call": {
+                                        "call_id": "",
+                                        "agent_id": "",
+                                        "direction": "",
+                                        "to_number": "",
+                                        "from_number": "",
+                                        "call_analysis": {
+                                            "call_summary": "",
+                                            "call_attempts": "",
+                                            "retry_pending": "false",
+                                            "custom_analysis_data": {
+                                                "notes": "",
+                                                "status": "{{10.call.call_analysis.custom_analysis_data.Status}}",
+                                                "caller_name": "",
+                                                "caller_phone": "",
+                                                "issue_summary": "",
+                                                "caller_address": "",
+                                                "issue_category": "",
+                                                "preferred_callback_window": ""
+                                            },
+                                            "last_call_id_outgoing": "{{10.call.call_id}}"
+                                        }
+                                    },
+                                    "event": ""
+                                },
+                                "upsert": false,
+                                "overwriteArrays": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "data": {
+                                            "nested": {
+                                                "call": {
+                                                    "nested": {
+                                                        "call_analysis": {
+                                                            "nested": {
+                                                                "custom_analysis_data": {
+                                                                    "nested": {
+                                                                        "mentions_safety_risk": {
+                                                                            "mode": "chose"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "upsert": {
+                                            "mode": "chose"
+                                        },
+                                        "overwriteArrays": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "datastore": {
+                                            "label": "First_Service_Emergency_Escalation"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "datastore",
+                                        "type": "datastore",
+                                        "label": "Data store",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "key",
+                                        "type": "text",
+                                        "label": "Key",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "upsert",
+                                        "type": "boolean",
+                                        "label": "Insert missing record",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "overwriteArrays",
+                                        "type": "boolean",
+                                        "label": "Overwrite an existing array in the record",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "spec": [
+                                            {
+                                                "name": "event",
+                                                "type": "text",
+                                                "label": "Event"
+                                            },
+                                            {
+                                                "name": "call",
+                                                "spec": [
+                                                    {
+                                                        "name": "call_id",
+                                                        "type": "text",
+                                                        "label": "Call ID"
+                                                    },
+                                                    {
+                                                        "name": "from_number",
+                                                        "type": "text",
+                                                        "label": "From number"
+                                                    },
+                                                    {
+                                                        "name": "to_number",
+                                                        "type": "text",
+                                                        "label": "To number"
+                                                    },
+                                                    {
+                                                        "name": "agent_id",
+                                                        "type": "text",
+                                                        "label": "Agent ID"
+                                                    },
+                                                    {
+                                                        "name": "direction",
+                                                        "type": "text",
+                                                        "label": "Direction"
+                                                    },
+                                                    {
+                                                        "name": "call_analysis",
+                                                        "spec": [
+                                                            {
+                                                                "name": "call_summary",
+                                                                "type": "text",
+                                                                "label": "Call summary"
+                                                            },
+                                                            {
+                                                                "name": "custom_analysis_data",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "caller_name",
+                                                                        "type": "text",
+                                                                        "label": "Caller name"
+                                                                    },
+                                                                    {
+                                                                        "name": "caller_phone",
+                                                                        "type": "text",
+                                                                        "label": "Caller phone"
+                                                                    },
+                                                                    {
+                                                                        "name": "caller_address",
+                                                                        "type": "text",
+                                                                        "label": "Caller address"
+                                                                    },
+                                                                    {
+                                                                        "name": "issue_summary",
+                                                                        "type": "text",
+                                                                        "label": "Issue summary"
+                                                                    },
+                                                                    {
+                                                                        "name": "issue_category",
+                                                                        "type": "text",
+                                                                        "label": "Issue category"
+                                                                    },
+                                                                    {
+                                                                        "name": "mentions_safety_risk",
+                                                                        "type": "boolean",
+                                                                        "label": "Mentions safety risk"
+                                                                    },
+                                                                    {
+                                                                        "name": "preferred_callback_window",
+                                                                        "type": "text",
+                                                                        "label": "Preferred callback window"
+                                                                    },
+                                                                    {
+                                                                        "name": "notes",
+                                                                        "type": "text",
+                                                                        "label": "Notes"
+                                                                    },
+                                                                    {
+                                                                        "name": "status",
+                                                                        "type": "text",
+                                                                        "label": null
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Custom analysis data"
+                                                            },
+                                                            {
+                                                                "name": "call_attempts",
+                                                                "type": "text",
+                                                                "label": null
+                                                            },
+                                                            {
+                                                                "name": "last_call_id_outgoing",
+                                                                "type": "text",
+                                                                "label": null
+                                                            },
+                                                            {
+                                                                "name": "retry_pending",
+                                                                "type": "text",
+                                                                "label": null
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Call analysis"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Call"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 23,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "filter": {
+                                "name": "Not Answered",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{29.status_safe}}",
+                                            "b": "Not_Answered",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 450
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 25,
+                                            "module": "datastore:UpdateRecord",
+                                            "version": 1,
+                                            "parameters": {
+                                                "datastore": 73333
+                                            },
+                                            "filter": {
+                                                "name": "Attempts Exhausted",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{20.call.call_analysis.call_attempts}}",
+                                                            "b": "4",
+                                                            "o": "number:greaterorequal"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "key": "{{18.incident_key}}",
+                                                "data": {
+                                                    "call": {
+                                                        "call_id": "",
+                                                        "agent_id": "",
+                                                        "direction": "",
+                                                        "to_number": "",
+                                                        "from_number": "",
+                                                        "call_analysis": {
+                                                            "call_summary": "",
+                                                            "call_attempts": "",
+                                                            "retry_pending": "false",
+                                                            "custom_analysis_data": {
+                                                                "notes": "",
+                                                                "status": "Answered",
+                                                                "caller_name": "",
+                                                                "caller_phone": "",
+                                                                "issue_summary": "",
+                                                                "caller_address": "",
+                                                                "issue_category": "",
+                                                                "preferred_callback_window": ""
+                                                            },
+                                                            "last_call_id_outgoing": "{{10.call.call_id}}"
+                                                        }
+                                                    },
+                                                    "event": ""
+                                                },
+                                                "upsert": false,
+                                                "overwriteArrays": false
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1800,
+                                                    "y": 300
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "data": {
+                                                            "nested": {
+                                                                "call": {
+                                                                    "nested": {
+                                                                        "call_analysis": {
+                                                                            "nested": {
+                                                                                "custom_analysis_data": {
+                                                                                    "nested": {
+                                                                                        "mentions_safety_risk": {
+                                                                                            "mode": "chose"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "upsert": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "overwriteArrays": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "datastore": {
+                                                            "label": "First_Service_Emergency_Escalation"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "datastore",
+                                                        "type": "datastore",
+                                                        "label": "Data store",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "key",
+                                                        "type": "text",
+                                                        "label": "Key",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "upsert",
+                                                        "type": "boolean",
+                                                        "label": "Insert missing record",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "overwriteArrays",
+                                                        "type": "boolean",
+                                                        "label": "Overwrite an existing array in the record",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "data",
+                                                        "spec": [
+                                                            {
+                                                                "name": "event",
+                                                                "type": "text",
+                                                                "label": "Event"
+                                                            },
+                                                            {
+                                                                "name": "call",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "call_id",
+                                                                        "type": "text",
+                                                                        "label": "Call ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "from_number",
+                                                                        "type": "text",
+                                                                        "label": "From number"
+                                                                    },
+                                                                    {
+                                                                        "name": "to_number",
+                                                                        "type": "text",
+                                                                        "label": "To number"
+                                                                    },
+                                                                    {
+                                                                        "name": "agent_id",
+                                                                        "type": "text",
+                                                                        "label": "Agent ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "direction",
+                                                                        "type": "text",
+                                                                        "label": "Direction"
+                                                                    },
+                                                                    {
+                                                                        "name": "call_analysis",
+                                                                        "spec": [
+                                                                            {
+                                                                                "name": "call_summary",
+                                                                                "type": "text",
+                                                                                "label": "Call summary"
+                                                                            },
+                                                                            {
+                                                                                "name": "custom_analysis_data",
+                                                                                "spec": [
+                                                                                    {
+                                                                                        "name": "caller_name",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller name"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "caller_phone",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller phone"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "caller_address",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller address"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "issue_summary",
+                                                                                        "type": "text",
+                                                                                        "label": "Issue summary"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "issue_category",
+                                                                                        "type": "text",
+                                                                                        "label": "Issue category"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "mentions_safety_risk",
+                                                                                        "type": "boolean",
+                                                                                        "label": "Mentions safety risk"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "preferred_callback_window",
+                                                                                        "type": "text",
+                                                                                        "label": "Preferred callback window"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "notes",
+                                                                                        "type": "text",
+                                                                                        "label": "Notes"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "status",
+                                                                                        "type": "text",
+                                                                                        "label": null
+                                                                                    }
+                                                                                ],
+                                                                                "type": "collection",
+                                                                                "label": "Custom analysis data"
+                                                                            },
+                                                                            {
+                                                                                "name": "call_attempts",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            },
+                                                                            {
+                                                                                "name": "last_call_id_outgoing",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            },
+                                                                            {
+                                                                                "name": "retry_pending",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Call analysis"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Call"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Record"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 30,
+                                            "module": "open-phone:sendATextMessageSms",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 7220260
+                                            },
+                                            "mapper": {
+                                                "to": [
+                                                    "+17014919488"
+                                                ],
+                                                "from": "PNchG4rRdC",
+                                                "content": "Your on call technician failed to answer the 4 emergency calls\n\nCustomer info:\nName: {{20.call.call_analysis.custom_analysis_data.caller_name}}\n\nPhone: {{20.call.call_analysis.custom_analysis_data.caller_phone}}\n\nAddress:{{20.call.call_analysis.custom_analysis_data.caller_address}}\n\nIssue:\n{{20.call.call_analysis.custom_analysis_data.issue_summary}}"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2100,
+                                                    "y": 300
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "to": {
+                                                            "mode": "chose",
+                                                            "items": [
+                                                                null
+                                                            ]
+                                                        },
+                                                        "from": {
+                                                            "mode": "chose",
+                                                            "label": "(707) 336-8748"
+                                                        },
+                                                        "setInboxStatus": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "open-phone"
+                                                            },
+                                                            "label": "My Quo connection"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:open-phone",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "SMS Content",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "max": 1600,
+                                                            "min": 1
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "from",
+                                                        "type": "select",
+                                                        "label": "The Phone Number to send the message FROM.",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "to",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "type": "text"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "The Phone Number to send the message TO.",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "setInboxStatus",
+                                                        "type": "select",
+                                                        "label": "Set Inbox Status",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "done"
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 26,
+                                            "module": "datastore:UpdateRecord",
+                                            "version": 1,
+                                            "parameters": {
+                                                "datastore": 73333
+                                            },
+                                            "filter": {
+                                                "name": "Attempts Remaining",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{20.call.call_analysis.call_attempts}}",
+                                                            "b": "4",
+                                                            "o": "number:less"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "key": "{{18.incident_key}}",
+                                                "data": {
+                                                    "call": {
+                                                        "call_id": "",
+                                                        "agent_id": "",
+                                                        "direction": "",
+                                                        "to_number": "",
+                                                        "from_number": "",
+                                                        "call_analysis": {
+                                                            "call_summary": "",
+                                                            "call_attempts": "",
+                                                            "retry_pending": "true",
+                                                            "custom_analysis_data": {
+                                                                "notes": "",
+                                                                "status": "Not_Answered",
+                                                                "caller_name": "",
+                                                                "caller_phone": "",
+                                                                "issue_summary": "",
+                                                                "caller_address": "",
+                                                                "issue_category": "",
+                                                                "preferred_callback_window": ""
+                                                            },
+                                                            "last_call_id_outgoing": "{{10.call.call_id}}"
+                                                        }
+                                                    },
+                                                    "event": ""
+                                                },
+                                                "upsert": false,
+                                                "overwriteArrays": false
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1800,
+                                                    "y": 600
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "data": {
+                                                            "nested": {
+                                                                "call": {
+                                                                    "nested": {
+                                                                        "call_analysis": {
+                                                                            "nested": {
+                                                                                "custom_analysis_data": {
+                                                                                    "nested": {
+                                                                                        "mentions_safety_risk": {
+                                                                                            "mode": "chose"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "upsert": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "overwriteArrays": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "datastore": {
+                                                            "label": "First_Service_Emergency_Escalation"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "datastore",
+                                                        "type": "datastore",
+                                                        "label": "Data store",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "key",
+                                                        "type": "text",
+                                                        "label": "Key",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "upsert",
+                                                        "type": "boolean",
+                                                        "label": "Insert missing record",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "overwriteArrays",
+                                                        "type": "boolean",
+                                                        "label": "Overwrite an existing array in the record",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "data",
+                                                        "spec": [
+                                                            {
+                                                                "name": "event",
+                                                                "type": "text",
+                                                                "label": "Event"
+                                                            },
+                                                            {
+                                                                "name": "call",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "call_id",
+                                                                        "type": "text",
+                                                                        "label": "Call ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "from_number",
+                                                                        "type": "text",
+                                                                        "label": "From number"
+                                                                    },
+                                                                    {
+                                                                        "name": "to_number",
+                                                                        "type": "text",
+                                                                        "label": "To number"
+                                                                    },
+                                                                    {
+                                                                        "name": "agent_id",
+                                                                        "type": "text",
+                                                                        "label": "Agent ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "direction",
+                                                                        "type": "text",
+                                                                        "label": "Direction"
+                                                                    },
+                                                                    {
+                                                                        "name": "call_analysis",
+                                                                        "spec": [
+                                                                            {
+                                                                                "name": "call_summary",
+                                                                                "type": "text",
+                                                                                "label": "Call summary"
+                                                                            },
+                                                                            {
+                                                                                "name": "custom_analysis_data",
+                                                                                "spec": [
+                                                                                    {
+                                                                                        "name": "caller_name",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller name"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "caller_phone",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller phone"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "caller_address",
+                                                                                        "type": "text",
+                                                                                        "label": "Caller address"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "issue_summary",
+                                                                                        "type": "text",
+                                                                                        "label": "Issue summary"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "issue_category",
+                                                                                        "type": "text",
+                                                                                        "label": "Issue category"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "mentions_safety_risk",
+                                                                                        "type": "boolean",
+                                                                                        "label": "Mentions safety risk"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "preferred_callback_window",
+                                                                                        "type": "text",
+                                                                                        "label": "Preferred callback window"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "notes",
+                                                                                        "type": "text",
+                                                                                        "label": "Notes"
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "status",
+                                                                                        "type": "text",
+                                                                                        "label": null
+                                                                                    }
+                                                                                ],
+                                                                                "type": "collection",
+                                                                                "label": "Custom analysis data"
+                                                                            },
+                                                                            {
+                                                                                "name": "call_attempts",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            },
+                                                                            {
+                                                                                "name": "last_call_id_outgoing",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            },
+                                                                            {
+                                                                                "name": "retry_pending",
+                                                                                "type": "text",
+                                                                                "label": null
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Call analysis"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Call"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Record"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 28,
+                                            "module": "http:MakeRequest",
+                                            "version": 4,
+                                            "parameters": {
+                                                "tlsType": "",
+                                                "proxyKeychain": "",
+                                                "authenticationType": "noAuth"
+                                            },
+                                            "mapper": {
+                                                "url": "https://hook.us2.make.com/ffuxp5aqk7b7kqr5xc5ex947cgsr3qod",
+                                                "method": "post",
+                                                "contentType": "json",
+                                                "inputMethod": "jsonString",
+                                                "shareCookies": false,
+                                                "parseResponse": true,
+                                                "allowRedirects": true,
+                                                "stopOnHttpError": true,
+                                                "jsonStringBodyContent": "{\r\n  \"incident_key\": \"{{18.incident_key}}\"\r\n}\r\n",
+                                                "requestCompressedContent": true
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2100,
+                                                    "y": 600
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "method": {
+                                                            "mode": "chose",
+                                                            "label": "POST"
+                                                        },
+                                                        "headers": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "contentType": {
+                                                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                                                        },
+                                                        "inputMethod": {
+                                                            "label": "JSON stringEnter the JSON body as a raw text string. If values contain JSON reserved characters, you must escape them manually."
+                                                        },
+                                                        "shareCookies": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "parseResponse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "allowRedirects": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "paginationType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "queryParameters": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "stopOnHttpError": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "requestCompressedContent": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "tlsType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "proxyKeychain": {
+                                                            "label": "Choose a key"
+                                                        },
+                                                        "authenticationType": {
+                                                            "label": "No authenticationUse when no credentials are required for the request."
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "authenticationType",
+                                                        "type": "select",
+                                                        "label": "Authentication type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "noAuth",
+                                                                "apiKey",
+                                                                "basicAuth",
+                                                                "oAuth"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "tlsType",
+                                                        "type": "select",
+                                                        "label": "Transport layer security (TLS)",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "mTls",
+                                                                "tls"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "proxyKeychain",
+                                                        "type": "keychain:proxy",
+                                                        "label": "Proxy"
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "url",
+                                                        "type": "url",
+                                                        "label": "URL",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "method",
+                                                        "type": "select",
+                                                        "label": "Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "get",
+                                                                "head",
+                                                                "post",
+                                                                "put",
+                                                                "patch",
+                                                                "delete",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Header"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Headers"
+                                                    },
+                                                    {
+                                                        "name": "queryParameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Parameter"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Query parameters"
+                                                    },
+                                                    {
+                                                        "name": "contentType",
+                                                        "type": "select",
+                                                        "label": "Body content type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "json",
+                                                                "multipart",
+                                                                "urlEncoded",
+                                                                "custom"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "parseResponse",
+                                                        "type": "boolean",
+                                                        "label": "Parse response",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "stopOnHttpError",
+                                                        "type": "boolean",
+                                                        "label": "Return error if HTTP request fails",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "timeout",
+                                                        "type": "uinteger",
+                                                        "label": "Timeout",
+                                                        "validate": {
+                                                            "max": 300,
+                                                            "min": 1
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "allowRedirects",
+                                                        "type": "boolean",
+                                                        "label": "Allow redirects",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "shareCookies",
+                                                        "type": "boolean",
+                                                        "label": "Share cookies with other HTTP modules",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "requestCompressedContent",
+                                                        "type": "boolean",
+                                                        "label": "Request compressed content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "inputMethod",
+                                                        "type": "select",
+                                                        "label": "Body input method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "dataStructure",
+                                                                "jsonString"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "jsonStringBodyContent",
+                                                        "type": "text",
+                                                        "label": "Body content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "paginationType",
+                                                        "type": "select",
+                                                        "label": "Pagination type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "offsetBased",
+                                                                "pageBased",
+                                                                "urlBased",
+                                                                "tokenBased"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "data",
+                                                        "type": "any",
+                                                        "label": "Data"
+                                                    },
+                                                    {
+                                                        "name": "statusCode",
+                                                        "type": "number",
+                                                        "label": "Status Code"
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": [
+                                                            {
+                                                                "name": "content-length",
+                                                                "type": "text",
+                                                                "label": "Content-Length"
+                                                            },
+                                                            {
+                                                                "name": "content-encoding",
+                                                                "type": "text",
+                                                                "label": "Content-Encoding"
+                                                            },
+                                                            {
+                                                                "name": "content-type",
+                                                                "type": "text",
+                                                                "label": "Content-Type"
+                                                            },
+                                                            {
+                                                                "name": "server",
+                                                                "type": "text",
+                                                                "label": "Server"
+                                                            },
+                                                            {
+                                                                "name": "cache-control",
+                                                                "type": "text",
+                                                                "label": "Cache-Control"
+                                                            },
+                                                            {
+                                                                "name": "set-cookie",
+                                                                "spec": {
+                                                                    "type": "text"
+                                                                },
+                                                                "type": "array",
+                                                                "label": "Set-Cookie"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Headers"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": [
+            {
+                "moduleIds": [
+                    22
+                ],
+                "content": "<p>Mark the incident as complete and stop further retry attempts.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    28
+                ],
+                "content": "<p>Trigger Flow B by calling its webhook endpoint and passing the incident key.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    26
+                ],
+                "content": "<p>Mark the incident as eligible for another retry cycle.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    30
+                ],
+                "content": "<p>Notify the escalation recipient that the on-call technician did not answer after the maximum number of attempts.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    25
+                ],
+                "content": "<p>Close the incident and prevent further retries.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    4
+                ],
+                "content": "<p>The scenario routes execution into one of two primary outcomes:</p><ul><li>Answered path</li><li>Not answered path</li></ul>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    29
+                ],
+                "content": "<p>Ensure a consistent fallback status value when the webhook payload does not include a status field.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    20
+                ],
+                "content": "<p>Load the original incident record in order to evaluate retry count and update incident state.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    18
+                ],
+                "content": "<p>Associate the emergency outbound call attempt with the original intake incident.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            },
+            {
+                "moduleIds": [
+                    10
+                ],
+                "content": "<p>Receive the call payload from Retell AI after an outbound emergency call attempt has completed.</p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            }
+        ]
+    }
+}
