@@ -1,18 +1,18 @@
 <div align="center">
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0a1a,40:1a0a2e,100:0d1b2a&height=180&section=header&text=Contract%20Royalty%20Extraction&fontSize=40&fontColor=ffffff&fontAlignY=36&desc=PDF%20Contracts%20%E2%86%92%20AI%20Royalty%20Extraction%20%E2%86%92%20Google%20Sheets%20%E2%80%94%20Fully%20Automated&descAlignY=58&descSize=14&animation=fadeIn" />
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,40:1a0533,100:0a0a1a&height=180&section=header&text=After-Hours%20Emergency%20Escalation&fontSize=36&fontColor=ffffff&fontAlignY=36&desc=Retell%20AI%20%E2%80%A2%20Make.com%20%E2%80%A2%20OpenPhone%20%E2%80%A2%20Gmail%20%E2%80%94%20Zero%20Missed%20Emergencies&descAlignY=60&descSize=14&animation=fadeIn" />
 
 <br/>
 
-<img src="https://img.shields.io/badge/Status-Inactive%20%2F%20On--Demand-f59e0b?style=for-the-badge&logo=circle&logoColor=white" />
+<img src="https://img.shields.io/badge/Status-Active%20%26%20Live-22c55e?style=for-the-badge&logo=circle&logoColor=white" />
 &nbsp;
-<img src="https://img.shields.io/badge/AI-GPT--3.5--Turbo-412991?style=for-the-badge&logo=openai&logoColor=white" />
+<img src="https://img.shields.io/badge/Trigger-Instant%20Webhook-7c3aed?style=for-the-badge&logo=zapier&logoColor=white" />
 &nbsp;
-<img src="https://img.shields.io/badge/Source-Dropbox%20PDFs-0061FF?style=for-the-badge&logo=dropbox&logoColor=white" />
+<img src="https://img.shields.io/badge/AI%20Voice-Retell%20AI-EA4B71?style=for-the-badge&logo=robot&logoColor=white" />
 &nbsp;
-<img src="https://img.shields.io/badge/Output-4%20Sheet%20Tabs-34A853?style=for-the-badge&logo=google-sheets&logoColor=white" />
+<img src="https://img.shields.io/badge/Retry%20Logic-Up%20to%204x-f59e0b?style=for-the-badge&logo=loop&logoColor=white" />
 &nbsp;
-<img src="https://img.shields.io/badge/Built%20With-n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" />
+<img src="https://img.shields.io/badge/Built%20With-Make.com-6D00CC?style=for-the-badge&logo=make&logoColor=white" />
 
 </div>
 
@@ -20,341 +20,304 @@
 
 ## 📌 What Is This?
 
-**Contract Royalty Extraction & Excel Automation** is an n8n automation that reads **book contract PDFs from Dropbox**, uses **GPT-3.5-Turbo** to extract royalty data for all four publishing formats (Hardcover · Paperback · eBook · Audiobook), and writes the structured results into a **Google Sheets database** — automatically skipping any contracts already processed.
+**After-Hours Emergency Escalation** is a three-scenario Make.com automation for **First Service**, a home services company. When a customer calls after-hours, a **Retell AI voice agent** handles the intake and classifies the request. This system then takes over automatically — escalating true emergencies to a live on-call technician via **AI outbound calls + SMS**, while routing non-urgent requests to the next business day via **email**.
 
-> Built for a publishing house managing foreign rights contracts across multiple territories and languages.
+If the on-call technician doesn't pick up, the system **retries up to 4 times**, waiting 30 seconds between each attempt, before giving up.
 
-### What it solves
-
-| Before | After |
-|:---|:---|
-| Manually reading 40+ contract PDFs | Single click — all contracts processed |
-| Copy-pasting royalty rates into Excel | AI extracts and formats all data automatically |
-| Missing escalator clauses | GPT splits each tier into its own row |
-| Re-processing the same contracts | SQL JOIN deduplication — never runs twice on the same file |
-| Rates mixed with net receipts / retail basis | Separated into distinct fields every time |
+> No after-hours emergency goes unanswered. No human has to monitor a phone at night.
 
 ---
 
-## 🤖 Workflow Name
+## 🧭 System Overview — 3 Scenarios
 
-> **`Contract Royalty Extraction & Excel Automation`**
-
-*Reads book contract PDFs → extracts royalty data with AI → writes structured results into Google Sheets.*
+| Scenario | Trigger | Role |
+|:---|:---|:---|
+| **Flow A** — Intake & Route | Retell AI intake call ends | Classify emergency vs. callback, fire first alert |
+| **Flow B** — Retry Engine | Retell AI outbound call ends | Check if answered; retry up to 4× if not |
+| **Flow C** — Resolution | Outbound call answered / max retries reached | Mark resolved or escalate to fallback |
 
 ---
 
-## ⚡ Architecture Overview
+## ⚡ Full System Architecture
 
 <div align="center">
 
 ```mermaid
 flowchart TD
-    A(["🖱️ Manual Trigger"]) --> B & C
+    CALLER(["📞 Customer calls\nafter-hours"]) --> RAI
 
-    B["📁 Dropbox\nList /Book contracts/\nAll PDFs"] --> D
-    C["📊 Google Sheets\nGet already-processed\ncontract IDs"] --> D
+    RAI["🤖 Retell AI\nVoice Intake Agent\nCollects: name, phone, address,\nissue, category, choice"] --> WH_A
 
-    D{"🔀 SQL Merge\nLEFT JOIN — keep only\nNEW / unprocessed files"} --> E
+    WH_A["⚡ Webhook → Flow A\nCall ends → payload sent\nto Make.com instantly"] --> DS_ADD
 
-    E["🔢 Select 1st 10\nBatch limit per run"] --> F
+    DS_ADD["💾 Data Store\nSave call record\nKeyed by call_id"] --> FILTER_A
 
-    F["⬇️ Dropbox\nDownload PDF binary"] --> G
+    FILTER_A{"📞 Caller phone\nexists?"} -- "✅ Yes" --> ROUTER_A
+    FILTER_A -- "❌ No" --> STOP_A(["🚫 Stop"])
 
-    G["📄 Extract from PDF\nConvert binary → raw text"] --> H
+    ROUTER_A{"🔀 Router\ncustomer_choice?"} -- "EMERGENCY_NOW" --> EMERG_PATH
+    ROUTER_A -- "NEXT_AVAILABLE" --> CB_PATH
 
-    H["🔧 Clean Data\nStrip whitespace · tag filename"] --> I
+    subgraph EMERG_PATH ["🚨 Emergency Path"]
+        RETELL_CALL["🧠 Build Retell JSON\nPrepare outbound call payload"] --> HTTP_CALL
+        HTTP_CALL["📡 POST → Retell API\nTrigger outbound AI call\nto on-call tech: +1 701-491-9488"] --> UPDATE_1
+        UPDATE_1["💾 Update Record\ncall_attempts = 1"] --> SMS
+        SMS["📱 OpenPhone SMS\nAlert on-call technician\nwith caller details"]
+    end
 
-    I(["🔁 Loop Over Items\nProcess one-by-one"]) --> |next item| J
+    subgraph CB_PATH ["📅 Callback Path"]
+        EMAIL["📧 Gmail\nSend callback request email\nwith preferred time window"]
+    end
 
-    J["⏳ Wait\nRate-limit buffer"] --> K
+    SMS --> WH_B
+    HTTP_CALL --> WH_B
 
-    K["🧠 GPT-3.5-Turbo\nExtract royalties\nfor all 4 formats"] --> L
+    WH_B["⚡ Webhook → Flow B\nOutbound call ends\n→ Make.com fires"] --> DS_GET
 
-    L["🔧 Clean Royalties\nParse JSON · attach file ID"] --> L
+    DS_GET["💾 Data Store\nGet record by incident_key"] --> ROUTER_B
 
-    L --> M & N & O & P
+    ROUTER_B{"🔀 Check conditions:\nNot answered?\nretry_pending = true?\ncall_attempts < 4?"} -- "All true → CONTINUE" --> WAIT
 
-    M["📊 Sheets Tab\nHardcover"]
-    N["📊 Sheets Tab\nAudiobook"]
-    O["📊 Sheets Tab\nPaperback"]
-    P["📊 Sheets Tab\neBook"]
+    subgraph RETRY_LOOP ["🔁 Retry Loop (max 4x)"]
+        WAIT["⏳ Wait 30 seconds"] --> INC
+        INC["🔢 Increment\ncall_attempts + 1"] --> UPDATE_2
+        UPDATE_2["💾 Update Record\nnew attempt count"] --> RETELL_2
+        RETELL_2["🧠 Build Retell JSON"] --> HTTP_2
+        HTTP_2["📡 POST → Retell API\nNew outbound call attempt"]
+    end
 
-    I --> |done| Q(["✅ Complete"])
+    ROUTER_B -- "Answered or max retries" --> RESOLVED(["✅ Resolved /\n⛔ Max Retries"])
 
-    style A fill:#302b63,color:#fff,stroke:#7c3aed
-    style B fill:#0061FF,color:#fff,stroke:#004ecc
-    style C fill:#34A853,color:#fff,stroke:#2d8f47
-    style D fill:#EA4B71,color:#fff,stroke:#c73a5d
-    style E fill:#6D00CC,color:#fff,stroke:#5800aa
-    style F fill:#0061FF,color:#fff,stroke:#004ecc
-    style G fill:#1a0533,color:#fff,stroke:#7c3aed
-    style H fill:#1a1a2e,color:#fff,stroke:#a78bfa
-    style I fill:#302b63,color:#fff,stroke:#7c3aed
-    style J fill:#555,color:#fff,stroke:#333
-    style K fill:#412991,color:#fff,stroke:#3a2480
-    style L fill:#1a1a2e,color:#fff,stroke:#a78bfa
-    style M fill:#34A853,color:#fff,stroke:#2d8f47
-    style N fill:#34A853,color:#fff,stroke:#2d8f47
-    style O fill:#34A853,color:#fff,stroke:#2d8f47
-    style P fill:#34A853,color:#fff,stroke:#2d8f47
-    style Q fill:#22c55e,color:#fff,stroke:#16a34a
+    style CALLER fill:#302b63,color:#fff,stroke:#7c3aed
+    style RAI fill:#7c3aed,color:#fff,stroke:#5b21b6
+    style WH_A fill:#EA4B71,color:#fff,stroke:#c73a5d
+    style DS_ADD fill:#1a1a2e,color:#fff,stroke:#7c3aed
+    style FILTER_A fill:#EA4B71,color:#fff,stroke:#c73a5d
+    style ROUTER_A fill:#6D00CC,color:#fff,stroke:#5800aa
+    style RETELL_CALL fill:#412991,color:#fff,stroke:#3a2480
+    style HTTP_CALL fill:#1a0533,color:#fff,stroke:#7c3aed
+    style UPDATE_1 fill:#1a1a2e,color:#fff,stroke:#7c3aed
+    style SMS fill:#16a34a,color:#fff,stroke:#15803d
+    style EMAIL fill:#D14836,color:#fff,stroke:#b03a2d
+    style WH_B fill:#EA4B71,color:#fff,stroke:#c73a5d
+    style DS_GET fill:#1a1a2e,color:#fff,stroke:#7c3aed
+    style ROUTER_B fill:#6D00CC,color:#fff,stroke:#5800aa
+    style WAIT fill:#555,color:#fff,stroke:#333
+    style INC fill:#302b63,color:#fff,stroke:#7c3aed
+    style UPDATE_2 fill:#1a1a2e,color:#fff,stroke:#7c3aed
+    style RETELL_2 fill:#412991,color:#fff,stroke:#3a2480
+    style HTTP_2 fill:#1a0533,color:#fff,stroke:#7c3aed
+    style STOP_A fill:#444,color:#fff,stroke:#333
+    style RESOLVED fill:#22c55e,color:#fff,stroke:#16a34a
 ```
 
 </div>
 
-## 🖼️ Workflow Screenshots
-
-<div align="center">
-
-<img src="https://drive.google.com/uc?export=view&id=18WrrjSw9bMURDogkiPAefY0wIfSErjf-" width="100%" style="border-radius:8px; margin-bottom:12px;" />
-
-<img src="https://drive.google.com/uc?export=view&id=1PNO8yMtMQXMYhmIMBGL1oCcjNMrUmzAB" width="100%" style="border-radius:8px; margin-bottom:12px;" />
-
-<img src="https://drive.google.com/uc?export=view&id=1bDKeF2kx08j-mmc2dK7NUSZdNm7eQOI3" width="100%" style="border-radius:8px;" />
-
-</div>
-
 ---
 
-## 🔗 Node-by-Node Breakdown
+## 🔗 Scenario-by-Scenario Breakdown
 
+### 🅰️ Flow A — Intake & Route
 
-### 1 · Manual Trigger
+**Trigger:** Retell AI fires this webhook the moment an after-hours intake call ends.
 
-On-demand execution only. Fires the pipeline manually from the n8n dashboard. Branches into two parallel paths at start for deduplication.
-
----
-
-### 2 · Deduplication — The Smart Gate
-
-Two nodes run in parallel before any file is downloaded:
-
-```mermaid
-flowchart LR
-    A(["Trigger"]) --> B["📁 Dropbox\nList ALL PDFs\nin /Book contracts/"]
-    A --> C["📊 Sheets\nRead hardcover tab\n(already processed IDs)"]
-    B --> D{"SQL Merge\nWHERE sheets.ID IS NULL"}
-    C --> D
-    D --> E["Only NEW files pass ✅"]
-```
-
-**SQL used:**
-```sql
-SELECT input1.*
-FROM input1
-LEFT JOIN input2
-ON input1.id = input2.ID
-WHERE input2.ID IS NULL
-```
-
-> `input1` = Dropbox file list · `input2` = already-processed sheet rows  
-> Only files whose Dropbox ID is **not found** in the sheet proceed.
-
----
-
-### 3 · Select 1st 10
-
-Limits each run to **10 contracts maximum**, preventing API quota exhaustion and keeping execution times predictable.
-
-```js
-const subsetOfItems = items.slice(0, 10);
-```
-
----
-
-### 4 · Download PDF from Dropbox
+#### Node Flow
 
 ```
-Node      : Download a file
-Source    : Dropbox (OAuth2)
-Input     : Dropbox file ID from the listing
-Output    : Binary PDF data
+Webhook (HOLD)
+    ↓
+[FILTER] custom_analysis_data exists?
+    ↓ ✅
+Data Store — Add Record  (First_Service_Emergency_Escalation)
+    key = call_id
+    stores full call payload including custom_analysis_data
+    ↓
+[FILTER] caller_phone exists?
+    ↓ ✅
+Router — Split on customer_choice
+    ├── EMERGENCY_NOW ────────────────────────────────────────────→ Emergency Path
+    └── NEXT_AVAILABLE ───────────────────────────────────────────→ Callback Path
+```
+
+#### Emergency Path
+
+```
+1. Create JSON  →  Retell outbound call payload
+                   to_number : +17014919488 (on-call tech)
+                   from_number : +19517449680
+                   agent_id : agent_fd36b...
+                   Dynamic vars: caller_name, caller_phone, address,
+                                 issue_summary, issue_category, notes,
+                                 intake_call_id
+
+2. HTTP POST  →  https://api.retellai.com/v2/create-phone-call
+   Bearer: key_97100c584b06c7e87343409059ab
+   [FILTER: customer_choice contains "EMERGENCY_NOW"]
+
+3. Data Store Update  →  set call_attempts = "1"
+
+4. OpenPhone SMS  →  to: +17014919488
+   from: (707) 336-8748
+   Content:
+   ┌─────────────────────────────────────────────────────────┐
+   │ First Service - Emergency On-Call Request               │
+   │ Name: {caller_name}                                     │
+   │ Phone: {caller_phone}                                   │
+   │ Address: {caller_address}                               │
+   │ Issue: {issue_summary}                                  │
+   │                                                         │
+   │ Follow up immediately. If unable, notify supervisor     │
+   │ and inform the customer.                                │
+   └─────────────────────────────────────────────────────────┘
+```
+
+#### Callback Path (NEXT_AVAILABLE)
+
+```
+Email  →  mikehawkinz@gmail.com
+Subject: Job Request {caller_address}
+Body: callback request with preferred_callback_window,
+      caller_name, phone, issue_summary, notes
 ```
 
 ---
 
-### 5 · Extract Text from PDF
+### 🅱️ Flow B — Retry Engine
+
+**Trigger:** Retell AI fires this webhook when each outbound call to the on-call technician ends.
+
+#### Node Flow
 
 ```
-Node      : Extract from PDF
-Operation : pdf  (n8n built-in)
-Output    : Raw extracted text string
+Webhook (First Service Emergency Escalation B)
+    ↓
+Data Store — Get Record
+    key = incident_key  (passed by Retell on outbound call end)
+    returns full stored call record
+    ↓
+Router
+    ├── CONTINUE path  (all 3 filters must pass)
+    └── STOP path
 ```
 
-Converts the binary PDF into a readable text block that can be sent to OpenAI.
+#### CONTINUE Filter — All 3 Must Pass (OR logic between rows)
 
----
-
-### 6 · Clean Data (JavaScript)
-
-```js
-// Normalises whitespace and tags the source filename
-const cleanText = rawText.replace(/\s+/g, ' ').trim();
-const fileName  = item.json.fileName || item.json.name || 'unknown.pdf';
+```
+┌─────┬──────────────────────────────────────────────────────────────┐
+│  1  │  status  ≠  "Answered"   →  tech didn't pick up             │
+│  2  │  retry_pending  =  "true"  →  retry was flagged             │
+│  3  │  call_attempts  <  4       →  haven't tried 4 times yet     │
+└─────┴──────────────────────────────────────────────────────────────┘
 ```
 
-Key outputs passed downstream:
-- `cleanText` — normalised contract text for the AI
-- `fileName` — used as a tracking key in every output row
+#### Retry Sequence
+
+```
+1. ⏳ Wait 30 seconds
+
+2. Set Variable: new_attempts
+   = parseNumber(call_attempts) + 1
+
+3. Data Store Update
+   call_attempts = new_attempts
+
+4. Create JSON → Retell outbound call payload
+   (same structure as Flow A, using stored call data)
+
+5. HTTP POST → Retell API
+   triggers another outbound call to on-call tech
+   (Flow B fires again when this call ends → loop)
+```
+
+#### Retry Timeline
+
+```
+Attempt 1  →  Flow A fires → call placed → tech doesn't answer
+               ↓ (30s wait)
+Attempt 2  →  Flow B fires → retry → call placed → still no answer
+               ↓ (30s wait)
+Attempt 3  →  Flow B fires → retry → call placed → still no answer
+               ↓ (30s wait)
+Attempt 4  →  Flow B fires → retry → call placed
+               ↓
+call_attempts = 4 → CONTINUE filter fails → STOP path handles it
+```
 
 ---
 
-### 7 · Loop Over Items
+### 🅲️ Flow C — Resolution / Final State
 
-Processes contracts **one at a time** using n8n's `splitInBatches` node — ensuring no two API calls overlap and the wait node can gate each item individually.
+Handles the terminal outcomes when a retry loop completes:
 
----
-
-### 8 · Wait
-
-A rate-limit buffer between batch items. Prevents OpenAI API throttling when processing many contracts in sequence.
-
----
-
-### 9 · GPT-3.5-Turbo — Royalty Parser
-
-The core intelligence of the pipeline.
-
-**Model:** `gpt-3.5-turbo`  
-**Input:** Full cleaned contract text + filename  
-**Output:** Structured JSON with royalty data for all 4 formats
-
-#### What it extracts — Contract Metadata
-
-| Field | Example |
+| Condition | Action |
 |:---|:---|
-| Contract Number | `R-143484`, `SRK #95972` |
-| Book Title | `The Bodyguard` |
-| Author | `J. Armentrout` |
-| Publisher (Licensee) | `Akademius` |
-| Rights Holder | Original publisher |
-| Territory | `World`, `Sweden` |
-| Language | `Swedish`, `Danish` |
-| Contract Date | `2024-02-06` |
-| Currency | `USD`, `EUR`, `SEK` |
-| Advance Amount | `$3,000` |
-| Term / Duration | `7 years` |
+| Tech answers (`status = "Answered"`) | Mark record resolved, stop retries |
+| `call_attempts ≥ 4` | Final escalation or fallback notification |
+| `retry_pending = false` | No further action needed |
 
-#### What it extracts — Royalties (per format)
+---
+
+## 📊 Data Flowing Through the System
+
+### Call Payload (from Retell AI)
 
 | Field | Description |
 |:---|:---|
-| `Format` | Hardcover / Paperback / Ebook / Audiobook |
-| `Sales_Range` | e.g. `1-4000`, `4001-8000`, `>8000`, `All sales` |
-| `Royalty_Percentage` | e.g. `8%`, `25%` (number only) |
-| `Royalty_Basis` | `Retail price` or `Net receipts` |
-| `Escalator_Yes_No` | `Yes` / `No` |
-| `Escalator_Details` | Full escalator description |
-| `Notes` | Special conditions, mass market vs trade, etc. |
-| `Source_Page` | Clause / section reference |
-| `Needs_Review` | `Yes` if ambiguous or missing |
-| `Processed_Date` | Today's date (auto-set) |
+| `call_id` | Unique call identifier (used as datastore key) |
+| `agent_id` | Retell intake agent ID |
+| `direction` / `from_number` / `to_number` | Call metadata |
+| `call_summary` | AI-generated transcript summary |
+| `caller_name` | Extracted from conversation |
+| `caller_phone` | Callback number |
+| `caller_address` | Service location |
+| `issue_summary` | What's wrong |
+| `issue_category` | Type of issue (plumbing, HVAC, etc.) |
+| `preferred_callback_window` | When they want a callback |
+| `notes` | Any extra details |
+| `customer_choice` | `EMERGENCY_NOW` or `NEXT_AVAILABLE` |
 
-#### Escalator Handling Example
+### Datastore Record (Make.com Data Store: `First_Service_Emergency_Escalation`)
 
-If a contract states: *"6% for first 4,000 copies, 8% for next 4,000, 10% thereafter"*
-
-```
-┌─────────────┬─────────────────────┬────────────────────┬────────────────┐
-│ Sales_Range │ Royalty_Percentage │ Escalator_Yes_No   │ Escalator_Details │
-├─────────────┼─────────────────────┼────────────────────┼────────────────┤
-│   1–4000    │        6%           │       Yes          │ 6% (1-4k),     │
-│  4001–8000  │        8%           │       Yes          │ 8% (4001-8k),  │
-│    >8000    │       10%           │       Yes          │ 10% (>8k)      │
-└─────────────┴─────────────────────┴────────────────────┴────────────────┘
-```
-
-Each tier becomes its **own row** in the sheet.
+| Field | Managed by | Purpose |
+|:---|:---|:---|
+| `key` (= call_id) | Flow A | Unique identifier |
+| `call_attempts` | Flow A + B | Tracks # retry attempts |
+| `retry_pending` | Flow A | Signals Flow B to keep retrying |
+| `status` | Flow B/C | `"Answered"` when resolved |
+| `last_call_id_outgoing` | Flow B | Tracks outbound call IDs |
+| All intake fields | Flow A | Passed to outbound calls |
 
 ---
 
-### 10 · Clean Royalties (JavaScript)
-
-Parses the raw OpenAI JSON string response into a proper JavaScript object and attaches the current file's Dropbox ID for traceability:
-
-```js
-const outputText  = openAIResponse.output[0].content[0].text;
-const parsedData  = JSON.parse(outputText);
-// Attach file ID from Dropbox for deduplication on next run
-fileId = $('Download a file').item.json.id;
-
-return { json: { extractedData: parsedData, processingStatus: "success", fileId } };
-```
-
----
-
-### 11 · Four Parallel Sheet Writes
-
-After parsing, all four royalty arrays are written to separate tabs **simultaneously**:
-
-```
-clean royalities
-    ├──▶ 📊 Hardcover  tab  (gid=0)
-    ├──▶ 📊 Audiobook  tab  (gid=1176049859)
-    ├──▶ 📊 Paperback  tab  (gid=109834210)
-    └──▶ 📊 eBook      tab  (gid=634562927)
-```
-
-Each row appended includes the **Dropbox file ID** (`ID` column) — this is what the deduplication SQL JOIN uses on the next run to skip already-processed contracts.
-
----
-
-## 📊 Google Sheets Schema
-
-All four tabs share the same column structure:
-
-```
-ID | Source_File_Name | Contract_Number | Contract_Name | Author_Name |
-Publisher_Licensee | Proprietor | Territory | Language | Contract_Date |
-Currency | Format | Sales_Range | Royalty_Percentage | Royalty_Basis |
-Escalator_Yes_No | Escalator_Details | Notes | Source_Page |
-Needs_Review | Processed_Date
-```
-
----
-
-## 📦 Real Contracts Processed
-
-From the pinned test data, this workflow handles real-world contracts including:
-
-| Book | Publisher / Agent |
-|:---|:---|
-| The 48 Laws of Power | Joost Elffers Books |
-| Atomic Habits | Penguin |
-| The Body Keeps the Score | Penguin Random House |
-| 101 Essays (Brianna Wiest) | TEC |
-| Never Split the Difference | DocuSign contract |
-| The Daily Stoic | Holiday / Penguin |
-| Before the Coffee Gets Cold | Foreign rights |
-| Hidden Potential | Swedish rights |
-| Stormlight Archive #1–2 | Sanderson |
-| Blood and Ash series | Armentrout |
-| … and 30+ more | — |
-
----
-
-## 🔄 Run Sequence (Data Flow)
+## 🔄 End-to-End Sequence
 
 ```mermaid
 sequenceDiagram
-    participant U as 🖱️ User
-    participant D as 📁 Dropbox
-    participant S1 as 📊 Sheets (Read)
-    participant M as 🔀 Merge
-    participant AI as 🧠 GPT-3.5
-    participant S2 as 📊 Sheets (Write ×4)
+    participant C as 📞 Customer
+    participant R as 🤖 Retell AI (Intake)
+    participant A as ⚡ Flow A
+    participant DS as 💾 Data Store
+    participant RO as 🤖 Retell AI (Outbound)
+    participant T as 👷 On-Call Tech
+    participant B as ⚡ Flow B
 
-    U->>D: Trigger — list contracts folder
-    U->>S1: Trigger — get processed IDs
-    D-->>M: All PDF file entries
-    S1-->>M: Already-processed IDs
-    M->>M: SQL JOIN — drop duplicates
-    M->>D: Download new PDFs (max 10)
-    D-->>AI: Extracted & cleaned text
-    AI-->>S2: Structured royalty JSON
-    S2-->>S1: New rows added (ID column)
-    Note over M,S1: Next run skips these files ✅
+    C->>R: Calls after-hours
+    R->>R: Conducts intake interview
+    R->>A: Webhook: call ended
+    A->>DS: Save call record
+    A->>RO: POST: create outbound call
+    A->>T: SMS: Emergency alert
+    RO->>T: AI calls on-call tech
+    T-->>RO: ❌ No answer
+    RO->>B: Webhook: call ended (no answer)
+    B->>DS: Get record
+    B->>B: Wait 30s, increment attempts
+    B->>RO: POST: create new outbound call
+    RO->>T: AI calls on-call tech again
+    T-->>RO: ✅ Answers
+    RO->>B: Webhook: call ended (answered)
+    B->>DS: status = "Answered"
+    Note over B,DS: Loop exits ✅
 ```
 
 ---
@@ -365,11 +328,11 @@ sequenceDiagram
 
 | Tool | Role |
 |:---|:---|
-| ![n8n](https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white) | Workflow orchestration |
-| ![Dropbox](https://img.shields.io/badge/Dropbox-0061FF?style=for-the-badge&logo=dropbox&logoColor=white) | Contract PDF storage |
-| ![OpenAI](https://img.shields.io/badge/GPT--3.5--Turbo-412991?style=for-the-badge&logo=openai&logoColor=white) | AI royalty extraction |
-| ![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white) | Structured output (4 tabs) |
-| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | Data cleaning & JSON parsing |
+| ![Make.com](https://img.shields.io/badge/Make.com-6D00CC?style=for-the-badge&logo=make&logoColor=white) | Workflow orchestration (3 scenarios) |
+| ![Retell AI](https://img.shields.io/badge/Retell%20AI-EA4B71?style=for-the-badge&logo=robot&logoColor=white) | AI voice intake + AI outbound escalation calls |
+| ![Make Datastore](https://img.shields.io/badge/Make%20Data%20Store-1a1a2e?style=for-the-badge&logo=database&logoColor=white) | State persistence across scenarios |
+| ![OpenPhone](https://img.shields.io/badge/OpenPhone%20SMS-16a34a?style=for-the-badge&logo=phone&logoColor=white) | SMS alert to on-call technician |
+| ![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white) | Non-emergency callback email |
 
 </div>
 
@@ -379,24 +342,37 @@ sequenceDiagram
 
 ### Prerequisites
 
-- [ ] n8n instance (self-hosted or cloud)
-- [ ] Dropbox OAuth2 credentials in n8n
-- [ ] Google Sheets OAuth2 credentials in n8n (two accounts used)
-- [ ] OpenAI API key configured in n8n
-- [ ] Google Sheet with 4 tabs: `hardcover`, `paperback`, `audiobook`, `eBook`
-- [ ] Dropbox folder: `/Book contracts/` containing PDF contracts
+- [ ] Make.com account with 3 scenarios imported
+- [ ] Retell AI account with intake agent configured
+- [ ] Make Data Store created: `First_Service_Emergency_Escalation`
+- [ ] OpenPhone account connected in Make
+- [ ] Google/Gmail account connected in Make
+- [ ] Retell AI webhooks pointed to Flow A and Flow B webhook URLs
+
+### Webhook Configuration in Retell AI
+
+| Webhook | Points to | When fired |
+|:---|:---|:---|
+| Post-call webhook (intake agent) | Flow A webhook URL | Intake call ends |
+| Post-call webhook (outbound agent) | Flow B webhook URL | Outbound call ends |
+
+### Phone Numbers
+
+| Number | Role |
+|:---|:---|
+| `+19517449680` | Retell outbound caller ID (from) |
+| `+17014919488` | On-call technician (to) |
+| `(707) 336-8748` | OpenPhone SMS sender |
 
 ### Activation Steps
 
-1. Import the workflow JSON into n8n
-2. Connect **Dropbox OAuth2** credentials to the two Dropbox nodes
-3. Connect **Google Sheets OAuth2** credentials (primary account for output)
-4. Connect primary account (output sheets — `hardcover`, `paperback`, `audiobook`, `eBook` nodes)
-5. Connect secondary account (read sheet — `Get row(s) in sheet` node)
-6. Update all Google Sheets URLs to your own spreadsheet
-7. Run manually — the workflow is **on-demand only** (not scheduled)
-
-> **Note:** The workflow is set to `active: false` — it runs only when manually triggered from the n8n dashboard.
+1. Create the Make Data Store with schema matching the call payload fields
+2. Import **Flow A** → connect Retell AI webhook → connect Data Store → connect OpenPhone + Gmail
+3. Import **Flow B** → connect Retell AI webhook → connect Data Store
+4. Import **Flow C** → connect as needed for resolution logic
+5. Point Retell intake agent post-call webhook → Flow A URL
+6. Point Retell outbound agent post-call webhook → Flow B URL
+7. Toggle all 3 scenarios to **Active** ✅
 
 ---
 
@@ -404,13 +380,34 @@ sequenceDiagram
 
 | Decision | Reason |
 |:---|:---|
-| Batch limit of 10 | Prevents OpenAI token quota exhaustion per run |
-| Wait node in loop | Rate-limits sequential API calls |
-| SQL JOIN for dedup | Robust — works even if sheet rows are reordered |
-| 4 separate sheet tabs | Easier filtering/analysis per format in Sheets |
-| `fileName` in every row | Full traceability back to source PDF |
-| `Needs_Review` flag | Surfaces ambiguous clauses for human QA |
-| Escalators → separate rows | Enables proper royalty calculations per sales tier |
+| Data Store as shared state | Passes call data between 3 independent scenarios without re-calling Retell API |
+| 30-second wait between retries | Gives technician time to see missed call before next attempt |
+| Max 4 attempts | Prevents infinite retry loops while giving reasonable escalation window |
+| SMS + AI call together | Belt-and-suspenders: text ensures tech sees it even if call goes to voicemail |
+| `incident_key` passed by Retell outbound | Links outbound call result back to original intake record |
+| `retry_pending` flag | Clean enable/disable control on retry loop without deleting records |
+
+---
+
+## 📈 How It Works End-to-End
+
+```
+Customer calls after hours
+        ↓
+Retell AI takes the call (no human needed at night)
+        ↓
+Customer says "I have an emergency"
+        ↓
+Flow A: Record stored → AI calls on-call tech + SMS sent
+        ↓
+Tech doesn't answer → Flow B retries every 30 seconds × 4
+        ↓
+Tech answers → AI briefs them on the customer's issue
+        ↓
+Tech calls customer directly to handle the emergency
+```
+
+Zero humans monitoring phones at 2AM. Zero missed emergencies.
 
 ---
 
@@ -426,4 +423,4 @@ sequenceDiagram
 
 </div>
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1b2a,50:1a0a2e,100:0a0a1a&height=100&section=footer&animation=fadeIn" />
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0a1a,50:1a0533,100:0d0221&height=100&section=footer&animation=fadeIn" />
